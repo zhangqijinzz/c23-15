@@ -33,13 +33,28 @@ export interface SubtitleProject {
     cues: SubtitleCue[];
   }>;
 }
+export type ImportSnapshotPolicy = "keep" | "archive" | "discard";
+export interface PendingImport {
+  fileName: string;
+  cueCount: number;
+  previousName: string;
+  snapshotCount: number;
+}
 export interface MeterState {
-  phase: "empty" | "importing" | "ready" | "editing" | "exporting" | "error";
+  phase:
+    | "empty"
+    | "importing"
+    | "confirming"
+    | "ready"
+    | "editing"
+    | "exporting"
+    | "error";
   project: SubtitleProject | null;
   issues: SubtitleIssue[];
   selectedId: string | null;
   notice: string;
   zoom: number;
+  pendingImport: PendingImport | null;
 }
 export const emptyState = (): MeterState => ({
   phase: "empty",
@@ -48,4 +63,5 @@ export const emptyState = (): MeterState => ({
   selectedId: null,
   notice: "",
   zoom: 1,
+  pendingImport: null,
 });

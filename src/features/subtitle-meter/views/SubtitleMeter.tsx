@@ -105,6 +105,13 @@ export function SubtitleMeter() {
           </button>
         ))}
       </nav>
+      {state.phase === "error" && state.notice && (
+        <div className="error-banner" role="alert">
+          <strong>操作未完成</strong>
+          <span>{state.notice}</span>
+          {project && <em>当前显示：{project.name}</em>}
+        </div>
+      )}
       <section
         id="module-panel"
         className="module-panel"
@@ -118,6 +125,7 @@ export function SubtitleMeter() {
               notice={state.notice}
               phase={state.phase}
               fileName={project?.name}
+              pendingImport={state.pendingImport}
             />
             {project ? (
               <section className="module project-overview">

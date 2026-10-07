@@ -3,6 +3,7 @@ import { formatSubtitles } from "../formatters/subtitleFormatter";
 import {
   emptyState,
   type Format,
+  type ImportSnapshotPolicy,
   type MeterState,
   type SubtitleCue,
   type SubtitleProject,
@@ -26,10 +27,11 @@ export class SubtitleMeterViewModel {
   private async commit(
     project: SubtitleProject,
     phase: MeterState["phase"] = "editing",
+    notice = "",
   ) {
     project.updatedAt = Date.now();
     const issues = detectIssues(project.cues);
-    this.publish({ project, issues, phase, notice: "" });
+    this.publish({ project, issues, phase, notice });
     try {
       await projectRepository.save(project);
     } catch {
@@ -56,32 +58,113 @@ export class SubtitleMeterViewModel {
       this.publish({ notice: "本地项目暂时无法读取，可继续导入字幕文件" });
     }
   }
+  private pending: {
+    fileName: string;
+    format: Format;
+    cues: SubtitleCue[];
+  } | null = null;
   async importFile(file: File) {
-    this.publish({ phase: "importing", notice: "正在读取并解析字幕文件…" });
+    this.pending = null;
+    this.publish({
+      phase: "importing",
+      notice: "正在读取并解析字幕文件…",
+      pendingImport: null,
+    });
     try {
       const format = detectFormat(file.name),
         text = await readTextFile(file),
         cues = parseSubtitles(text, format);
-      const project: SubtitleProject = {
-        id: "subtitle-meter.current.v1",
-        name: file.name,
-        format,
-        cues,
-        updatedAt: Date.now(),
-        versions: [],
-      };
-      this.publish({
-        selectedId: cues[0].id,
-        notice: `已解析 ${cues.length} 条字幕`,
-      });
-      await this.commit(project, "ready");
+      const previous = this.state.project;
+      if (previous && previous.versions.length > 0) {
+        this.pending = { fileName: file.name, format, cues };
+        this.publish({
+          phase: "confirming",
+          notice: "",
+          pendingImport: {
+            fileName: file.name,
+            cueCount: cues.length,
+            previousName: previous.name,
+            snapshotCount: previous.versions.length,
+          },
+        });
+        return;
+      }
+      await this.commitImported(file.name, format, cues, "discard");
     } catch (error) {
+      this.pending = null;
+      const current = this.state.project,
+        reason =
+          error instanceof Error ? error.message : "导入失败，请检查文件后重试";
       this.publish({
         phase: "error",
-        notice:
-          error instanceof Error ? error.message : "导入失败，请检查文件后重试",
+        pendingImport: null,
+        notice: current
+          ? `《${file.name}》导入失败：${reason}。当前项目《${current.name}》未受影响，可继续编辑或重新导入`
+          : `《${file.name}》导入失败：${reason}`,
       });
     }
+  }
+  async confirmImport(policy: ImportSnapshotPolicy) {
+    const pending = this.pending;
+    if (!pending) return;
+    this.pending = null;
+    await this.commitImported(
+      pending.fileName,
+      pending.format,
+      pending.cues,
+      policy,
+    );
+  }
+  cancelImport() {
+    if (!this.pending) return;
+    this.pending = null;
+    this.publish({
+      phase: "ready",
+      pendingImport: null,
+      notice: `已取消导入，当前项目《${this.state.project?.name}》保持不变`,
+    });
+  }
+  private async commitImported(
+    fileName: string,
+    format: Format,
+    cues: SubtitleCue[],
+    policy: ImportSnapshotPolicy,
+  ) {
+    const previous = this.state.project,
+      snapshotCount = previous?.versions.length ?? 0;
+    let versions: SubtitleProject["versions"] = [];
+    if (previous && policy !== "discard") {
+      versions = structuredClone(previous.versions);
+      if (policy === "archive")
+        versions.push({
+          id: `v-${Date.now()}`,
+          label: `归档 · ${previous.name}`,
+          savedAt: Date.now(),
+          cues: structuredClone(previous.cues),
+        });
+    }
+    const project: SubtitleProject = {
+      id: "subtitle-meter.current.v1",
+      name: fileName,
+      format,
+      cues,
+      updatedAt: Date.now(),
+      versions,
+    };
+    const summary =
+      policy === "keep"
+        ? `，已保留旧项目的 ${snapshotCount} 个快照`
+        : policy === "archive"
+          ? `，旧项目已归档为快照（共 ${snapshotCount + 1} 个）`
+          : snapshotCount > 0
+            ? `，已丢弃旧项目的 ${snapshotCount} 个快照`
+            : "";
+    this.publish({ selectedId: cues[0].id, pendingImport: null });
+    await this.commit(
+      project,
+      "ready",
+      `已解析 ${cues.length} 条字幕${summary}`,
+    );
   }
   selectCue(id: string) {
     this.publish({ selectedId: id });

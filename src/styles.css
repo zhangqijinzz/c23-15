@@ -251,6 +251,89 @@ h1 em {
 .notice.error {
   color: #b35248;
 }
+.import-confirm {
+  margin-top: 10px;
+  border: 1px solid #e3ddc9;
+  border-radius: 7px;
+  background: #fdfbf3;
+  padding: 12px 14px;
+}
+.import-confirm > strong {
+  color: #343a30;
+  font-size: 11px;
+}
+.import-confirm > p {
+  margin: 6px 0 0;
+  color: #777b71;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.import-confirm-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.import-confirm-actions button {
+  flex: 1;
+  border: 1px solid #dfe2d4;
+  border-radius: 6px;
+  background: #fff;
+  padding: 7px 8px;
+  color: #4c5545;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+.import-confirm-actions button:hover {
+  border-color: #9dbd68;
+  background: #fbfdf8;
+}
+.import-confirm-actions small {
+  display: block;
+  margin-top: 3px;
+  color: #a0a297;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.import-confirm-cancel {
+  margin-top: 8px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: #95988e;
+  font-size: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.error-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+  border: 1px solid #ecd9d5;
+  border-radius: 8px;
+  background: #fdf6f4;
+  padding: 10px 14px;
+  color: #b35248;
+  font-size: 11px;
+}
+.error-banner strong {
+  flex-shrink: 0;
+}
+.error-banner span {
+  color: #a0695f;
+  line-height: 1.5;
+}
+.error-banner em {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: #8a5a50;
+  font-style: normal;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+}
 .timeline-module {
   overflow: hidden;
 }
