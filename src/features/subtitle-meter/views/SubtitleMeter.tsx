@@ -113,20 +113,32 @@ export function SubtitleMeter() {
       >
         {activeTab === "import" && (
           <div className="module-page import-page">
-            <ImportModule
-              vm={vm}
-              notice={state.notice}
-              phase={state.phase}
-              fileName={project?.name}
-            />
+            <ImportModule vm={vm} state={state} project={project ?? null} />
             {project ? (
-              <section className="module project-overview">
+              <section
+                className={`module project-overview ${
+                  state.phase === "import-confirm" || state.importError
+                    ? "project-overview-stale"
+                    : ""
+                }`}
+              >
                 <div>
-                  <span className="module-kicker">CURRENT PROJECT</span>
+                  <span className="module-kicker">
+                    {state.phase === "import-confirm"
+                      ? "当前项目 · 等待替换确认"
+                      : state.importError
+                        ? "当前项目 · 新文件导入失败"
+                        : "CURRENT PROJECT"}
+                  </span>
                   <h2>{project.name}</h2>
                   <p>
                     {project.cues.length} 条字幕 ·{" "}
-                    {project.format.toUpperCase()} · 已自动保存到此浏览器
+                    {project.format.toUpperCase()} ·{" "}
+                    {state.phase === "import-confirm"
+                      ? "替换确认前不会改动此项目"
+                      : state.importError
+                        ? "以下仍是这份旧项目，内容与快照均未改动"
+                        : "已自动保存到此浏览器"}
                   </p>
                 </div>
                 <div className="overview-count">

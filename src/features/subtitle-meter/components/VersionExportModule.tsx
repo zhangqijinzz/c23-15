@@ -9,6 +9,7 @@ export function VersionExportModule({
   vm: SubtitleMeterViewModel;
   phase: string;
 }) {
+  const archives = project.archives ?? [];
   return (
     <section className="module version-module">
       <div className="module-head">
@@ -44,6 +45,35 @@ export function VersionExportModule({
               {version.label}
               <span>恢复 ↗</span>
             </button>
+          ))}
+        </div>
+      )}
+      {archives.length > 0 && (
+        <div className="archive-list">
+          <div className="archive-head">
+            <strong>已归档的旧项目快照</strong>
+            <small>只读保留，可导出，不会用于回退当前项目</small>
+          </div>
+          {archives.map((archive) => (
+            <div key={archive.id} className="archive-group">
+              <div className="archive-name" title={archive.projectName}>
+                {archive.projectName}
+                <span>{archive.versions.length} 个快照</span>
+              </div>
+              {archive.versions.map((version) => (
+                <div key={version.id} className="archive-row">
+                  <span>{version.label}</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      vm.exportArchivedVersion(archive.id, version.id)
+                    }
+                  >
+                    导出 ↓
+                  </button>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       )}

@@ -623,6 +623,215 @@ h1 em {
   font-size: 8px;
   margin: 9px 0 0;
 }
+.file-status.ready .status-dot {
+  background: #8cbd54;
+}
+.file-status.pending .status-dot {
+  background: #d6a23e;
+}
+.file-status.error .status-dot {
+  background: #c66a5c;
+}
+.file-status.error {
+  color: #b35248;
+}
+.file-status.pending {
+  color: #9a7a2e;
+}
+.notice-card {
+  margin-top: 11px;
+  border: 1px solid #e4e0d0;
+  background: #fdfaf2;
+  border-radius: 7px;
+  padding: 11px 13px;
+}
+.notice-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.notice-card-head strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a6a24;
+}
+.notice-close {
+  flex: 0 0 auto;
+  border: 0;
+  background: none;
+  color: #a99c7c;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.notice-card p {
+  margin: 6px 0 0;
+  color: #8f8468;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.notice-card .kept-project-note {
+  color: #7b7258;
+}
+.error-card {
+  border-color: #eccfc9;
+  background: #fdf5f3;
+}
+.error-card .notice-card-head strong {
+  color: #b35248;
+}
+.error-card p {
+  color: #b3766c;
+}
+.replace-card {
+  border-color: #d8e2c4;
+  background: #fbfdf5;
+}
+.replace-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.replace-summary > div {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #e6ead9;
+  border-radius: 6px;
+  background: #fff;
+  padding: 8px 10px;
+}
+.replace-summary strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: #3b4332;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.replace-label {
+  color: #93a07e;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+}
+.replace-arrow {
+  flex: 0 0 auto;
+  color: #8aa25c;
+  font-size: 9px;
+}
+.replace-question {
+  margin: 10px 0 0;
+  color: #6f7a5f;
+  font-size: 10px;
+}
+.replace-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 9px;
+}
+.replace-choice {
+  display: grid;
+  gap: 5px;
+  text-align: left;
+  border: 1px solid #dde3cd;
+  border-radius: 6px;
+  background: #fff;
+  padding: 9px 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.replace-choice:hover {
+  border-color: #9dbd68;
+  background: #f6fbee;
+}
+.replace-choice strong {
+  font-size: 10px;
+  color: #51683a;
+}
+.replace-choice small {
+  color: #98a088;
+  font-size: 8px;
+  line-height: 1.5;
+}
+.replace-cancel {
+  margin-top: 9px;
+  border: 0;
+  background: none;
+  color: #8f9583;
+  font-size: 9px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.project-overview-stale {
+  border-color: #e6d9b8;
+  background: #fdfaf2;
+}
+.archive-list {
+  margin-top: 12px;
+  border-top: 1px solid #efefe9;
+  padding-top: 10px;
+}
+.archive-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.archive-head strong {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6d7463;
+}
+.archive-head small {
+  color: #a7aaa0;
+  font-size: 8px;
+}
+.archive-group {
+  margin-top: 8px;
+  border: 1px solid #efefe9;
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+.archive-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+  color: #6b7064;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.archive-name span {
+  flex: 0 0 auto;
+  color: #a5a89d;
+  font-size: 8px;
+}
+.archive-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: #8b8f84;
+  font-size: 9px;
+}
+.archive-row button {
+  border: 1px solid #e3e5dd;
+  border-radius: 4px;
+  background: #fff;
+  color: #6d795d;
+  font-size: 8px;
+  padding: 3px 7px;
+  cursor: pointer;
+}
 .checklist p {
   color: #85897e;
   font-size: 10px;
@@ -937,6 +1146,9 @@ footer {
 @media (max-width: 600px) {
   .module-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .replace-choices {
+    grid-template-columns: 1fr;
   }
   .module-tab {
     min-height: 52px;
